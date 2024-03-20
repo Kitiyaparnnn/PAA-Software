@@ -16,5 +16,5 @@ Map<int, Color> color = {
 class ColorCode {
   static MaterialColor appBarColor = MaterialColor(0xFF5FF430, color);
   static Color iconsAppBar = Colors.white;
-  static Color buttonsColor = Colors.green;
+  static Color buttonsColor = Colors.green.shade400;
 }

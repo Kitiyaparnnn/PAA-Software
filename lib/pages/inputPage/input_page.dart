@@ -5,8 +5,8 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:paa/models/reportInfo.dart';
-import 'package:paa/pages/analysisPage/allAnalysisPage.dart';
-import 'package:paa/pages/analysisPage/tapAnalysisPage.dart';
+import 'package:paa/pages/analysisPage/all_analysis_page.dart';
+import 'package:paa/pages/analysisPage/tap_analysis_page.dart';
 import 'package:paa/pages/inputPage/components/input_decoration.dart';
 
 import 'package:paa/utils/colorConfig.dart';
@@ -27,7 +27,7 @@ class _InputPageState extends State<InputPage> {
   String dropdownValue = PreferenceKey.inputForm;
   File? imageFile;
   File? _image;
-  ReportInfo report = ReportInfo('', '', [], [], []);
+  ReportInfo report = ReportInfo('', PreferenceKey.peraceticAcid, [], [], []);
 
   @override
   void initState() {
@@ -50,8 +50,11 @@ class _InputPageState extends State<InputPage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 InkWell(
-                  onTap: () {
-                    _getFromCamera();
+                  onTap: () async {
+                    await _getFromCamera();
+                    if (context.mounted) {
+                      Navigator.of(context).pop();
+                    }
                   },
                   child: const Row(
                     children: [
@@ -70,8 +73,11 @@ class _InputPageState extends State<InputPage> {
                   ),
                 ),
                 InkWell(
-                  onTap: () {
-                    _getFromGallery();
+                  onTap: () async {
+                    await _getFromGallery();
+                    if (context.mounted) {
+                      Navigator.of(context).pop();
+                    }
                   },
                   child: const Row(
                     children: [
@@ -95,23 +101,20 @@ class _InputPageState extends State<InputPage> {
         });
   }
 
-  void _getFromGallery() async {
+  Future<void> _getFromGallery() async {
     XFile? pickedFile = await ImagePicker().pickImage(
         source: ImageSource.gallery, maxHeight: 1080, maxWidth: 1080);
     if (pickedFile != null) {
       _cropImage(pickedFile.path);
     }
-    Navigator.pop(context);
   }
 
-  void _getFromCamera() async {
+  Future<void> _getFromCamera() async {
     XFile? pickedFile = await ImagePicker()
         .pickImage(source: ImageSource.camera, maxHeight: 1080, maxWidth: 1080);
     if (pickedFile != null) {
       _cropImage(pickedFile.path);
     }
-
-    Navigator.pop(context);
   }
 
   void _cropImage(filePath) async {
@@ -166,6 +169,7 @@ class _InputPageState extends State<InputPage> {
     }
 
     return Container(
+      height: 2.5,
       decoration: BoxDecoration(
         border: Border.all(color: Colors.grey),
       ),
@@ -204,7 +208,10 @@ class _InputPageState extends State<InputPage> {
             : Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (BuildContext context) => const AllAnalysisPage(),
+                  builder: (BuildContext context) => AllAnalysisPage(
+                    report: report,
+                    imageFile: _image,
+                  ),
                 ),
               );
       },
@@ -298,10 +305,11 @@ class _InputPageState extends State<InputPage> {
                                 ],
                               ),
                               Container(
-                                constraints: BoxConstraints(
-                                  maxWidth: MediaQuery.of(context).size.width,
-                                  maxHeight: 252,
-                                ),
+                                height: 240,
+                                // constraints: BoxConstraints(
+                                //   maxWidth: MediaQuery.of(context).size.width,
+                                //   maxHeight: 252,
+                                // ),
                                 decoration: const BoxDecoration(
                                   shape: BoxShape.rectangle,
                                 ),
@@ -310,14 +318,14 @@ class _InputPageState extends State<InputPage> {
                                     imageFile != null
                                         ? Image.file(imageFile!,
                                             width: double.infinity,
-                                            height: double.infinity,
+                                            height: 240,
                                             semanticLabel: "96-well plates",
-                                            fit: BoxFit.fill)
+                                            fit: BoxFit.cover)
                                         : Center(
                                             widthFactor: double.infinity,
                                             heightFactor: double.infinity,
                                             child: Text(
-                                              "ไม่มีรูปภาพ",
+                                              "",
                                               style: StyleText.normalText,
                                               textAlign: TextAlign.center,
                                             ),

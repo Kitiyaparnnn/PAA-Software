@@ -5,13 +5,11 @@ class GridConfig {
 
 class PreferenceKey {
   static const List<String> evaluate = [
-    'Peratic Acid'
+    'Peracetic Acid'
   ];
   static const String standard = 'Standard';
   static const String sample = 'Sample';
-  static const String phosphate = 'Phosphate';
-  static const String nitrate = 'Nitrate';
-  static const String potassium = 'Potassium';
+  static const String peraceticAcid = 'Peracetic Acid';
 
   static const String h_well_index = 'well_index';
   static const String h_std_smp = 'STD/SMP';
@@ -22,9 +20,9 @@ class PreferenceKey {
   static const String h_saturation = 'Saturation';
 
   static const String reportTitle =
-      'รายงานผลการวิเคราะห์ธาตุอาหารในดินจากภาพถ่าย';
+      'รายงานผลการวิเคราะห์ peracetice acid จากภาพถ่าย';
   static const String nameTitle = 'ชื่อการทดลอง: ';
-  static const String evaluateTitle = 'ธาตุอาหารในดิน: ';
+  static const String evaluateTitle = 'สาร: ';
   static const String dateTitle = 'วันที่ส่งภาพเพื่อวิเคราะห์: ';
 
   static const String inputForm = 'Peratic Acid';

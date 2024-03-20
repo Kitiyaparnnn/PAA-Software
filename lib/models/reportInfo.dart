@@ -14,11 +14,10 @@ class ReportInfo {
 
   List<double> standard = [];
   List<double> sample = [];
+
+  //standard concentration
   Map<String, List<double>> con = {
-    PreferenceKey.phosphate: [0, 0.5, 1, 2, 3],
-    // PreferenceKey.nitrate: [0, 0.1, 0.5, 1, 2.5], // for testing only
-    PreferenceKey.nitrate: [0, 0.5, 1, 2.5, 5],
-    PreferenceKey.potassium: [0, 5, 10, 20, 30]
+    PreferenceKey.peraceticAcid: [0, 0.15, 0.5, 1, 2.5, 3],
   };
 
   Plate plate = Plate();
@@ -29,19 +28,11 @@ class ReportInfo {
     standard = [];
     // print(this.evaluate);
     try {
-      if (evaluate == PreferenceKey.phosphate) {
-        for (int i = 1; i < 51; i++) {
-          standard.add(red[i - 1].toDouble());
-        }
-      } else if (evaluate == PreferenceKey.nitrate) {
+      if (evaluate == PreferenceKey.peraceticAcid) {
         for (int i = 1; i < 51; i++) {
           standard.add(green[i - 1].toDouble());
         }
-      } else if (evaluate == PreferenceKey.potassium) {
-        for (int i = 1; i < 51; i++) {
-          standard.add(blue[i - 1].toDouble());
-        }
-      }
+      } 
     } catch (e) {
       logger.e('Fail: calculate standard value');
     }
@@ -53,17 +44,9 @@ class ReportInfo {
     // print(Plate.php);
     sample = [];
     try {
-      if (evaluate == PreferenceKey.phosphate) {
-        for (int i = 51; i < red.length + 1; i++) {
-          sample.add(red[i - 1].toDouble());
-        }
-      } else if (evaluate == PreferenceKey.nitrate) {
+      if (evaluate == PreferenceKey.peraceticAcid) {
         for (int i = 51; i < green.length + 1; i++) {
           sample.add(green[i - 1].toDouble());
-        }
-      } else if (evaluate == PreferenceKey.potassium) {
-        for (int i = 51; i < blue.length + 1; i++) {
-          sample.add(blue[i - 1].toDouble());
         }
       }
     } catch (e) {
