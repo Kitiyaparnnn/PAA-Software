@@ -8,7 +8,6 @@ import 'package:paa/pages/inputPage/input_page.dart';
 // import 'pages/InputPage/InputPage.dart';
 // import 'package:google_fonts/google_fonts.dart';
 
-
 final logger = Logger(
   printer: PrettyPrinter(),
 );
@@ -34,6 +33,7 @@ class MyApp extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return MaterialApp(
+              debugShowCheckedModeBanner: false,
               home: SafeArea(
                 child: Scaffold(
                   body: Container(

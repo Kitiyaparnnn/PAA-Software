@@ -1,7 +1,5 @@
+import 'package:paa/my_app.dart';
 import 'package:scidart/numdart.dart';
-
-
-import '../../../myApp.dart';
 
 class ChartData {
   ChartData(this.x, this.y);
@@ -24,15 +22,14 @@ PolyFit calRsquare(List<double> x, List<double> y) {
 List<double> calConcentrate(PolyFit equation, List<double> sample) {
   List<double> result = [];
   try {
-    sample.forEach((code) {
+    for (var code in sample) {
       result.add(equation.predict(code));
-      // logger.d('$code : ${result.last}');
-    });
+    }
 
     var length = result.length;
-    print('#concentrate: $length');
+    logger.i('#calculatedConcentrate: $length');
   } catch (e) {
-    logger.e('Fail: cal concentrate');
+    logger.e('Fail: calculate the concentrate');
   }
   return result;
 }

@@ -1,6 +1,6 @@
 import 'package:image/image.dart' as image_lib;
 import 'dart:io';
-import 'package:paa/utils/constantConfig.dart';
+import 'package:paa/utils/constant_config.dart';
 import 'dart:async';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';

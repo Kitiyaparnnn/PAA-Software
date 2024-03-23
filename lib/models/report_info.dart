@@ -1,7 +1,8 @@
 import 'dart:core';
-import 'package:paa/utils/constantConfig.dart';
-import '../MyApp.dart';
-import '../utils/PlateConfig.dart';
+import 'package:paa/utils/constant_config.dart';
+import 'package:paa/utils/plate_config.dart';
+import '../my_app.dart';
+
 
 class ReportInfo {
   String name;
@@ -24,35 +25,30 @@ class ReportInfo {
   
 
   List<double> calStandard() {
-    // print(Plate.pnpStandard);
     standard = [];
-    // print(this.evaluate);
     try {
       if (evaluate == PreferenceKey.peraceticAcid) {
-        for (int i = 1; i < 51; i++) {
+        for (int i = 1; i < 61; i++) {
           standard.add(green[i - 1].toDouble());
         }
       } 
     } catch (e) {
       logger.e('Fail: calculate standard value');
     }
-    // print(standard);
     return standard;
   }
 
   List<double> calSample() {
-    // print(Plate.php);
     sample = [];
     try {
       if (evaluate == PreferenceKey.peraceticAcid) {
-        for (int i = 51; i < green.length + 1; i++) {
+        for (int i = 61; i < green.length + 1; i++) {
           sample.add(green[i - 1].toDouble());
         }
       }
     } catch (e) {
       logger.e('Fail: calculate sample value');
     }
-    // print(sample);
     return sample;
   }
 }

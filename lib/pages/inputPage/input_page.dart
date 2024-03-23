@@ -4,15 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:paa/models/reportInfo.dart';
+import 'package:paa/models/report_info.dart';
+import 'package:paa/my_app.dart';
 import 'package:paa/pages/analysisPage/all_analysis_page.dart';
 import 'package:paa/pages/analysisPage/tap_analysis_page.dart';
 import 'package:paa/pages/inputPage/components/input_decoration.dart';
 
-import 'package:paa/utils/colorConfig.dart';
-import 'package:paa/utils/constantConfig.dart';
-import 'package:paa/utils/plateConfig.dart';
-import 'package:paa/utils/textConfig.dart';
+import 'package:paa/utils/color_config.dart';
+import 'package:paa/utils/constant_config.dart';
+import 'package:paa/utils/plate_config.dart';
+import 'package:paa/utils/text_config.dart';
 import 'package:path_provider/path_provider.dart';
 
 class InputPage extends StatefulWidget {
@@ -146,7 +147,7 @@ class _InputPageState extends State<InputPage> {
     setState(() {
       _image = newImage;
     });
-    print('imagePath: $_image');
+    logger.i('imagePath: $_image');
   }
 
   Widget _checkBox(String evaluate, int index) {
@@ -305,7 +306,7 @@ class _InputPageState extends State<InputPage> {
                                 ],
                               ),
                               Container(
-                                height: 240,
+                                height: MediaQuery.of(context).size.width,
                                 // constraints: BoxConstraints(
                                 //   maxWidth: MediaQuery.of(context).size.width,
                                 //   maxHeight: 252,
@@ -343,10 +344,10 @@ class _InputPageState extends State<InputPage> {
                                 ),
                               ),
                             ]),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        _analyzTap(),
+                        // const SizedBox(
+                        //   height: 10,
+                        // ),
+                        // _analyzTap(),
                         const SizedBox(
                           height: 10,
                         ),

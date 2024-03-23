@@ -1,25 +1,24 @@
 import 'dart:io';
-import 'dart:math';
 import 'package:csv/csv.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:paa/MyApp.dart';
-import 'package:paa/models/reportInfo.dart';
+import 'package:paa/my_app.dart';
+import 'package:paa/models/report_info.dart';
 import 'package:paa/pages/analysisPage/components/crop_plate_generator.dart';
 import 'package:paa/pages/analysisPage/components/csv_genterator.dart';
 import 'package:paa/pages/analysisPage/components/graph_calculation.dart';
 import 'package:paa/pages/analysisPage/components/pdf_printer.dart';
 import 'package:paa/pages/analysisPage/components/report_header.dart';
 import 'package:paa/pages/analysisPage/components/rgb_extraction.dart';
-import 'package:paa/utils/colorConfig.dart';
-import 'package:paa/utils/constantConfig.dart';
-import 'package:paa/utils/plateConfig.dart';
-import 'package:paa/utils/textConfig.dart';
+import 'package:paa/utils/color_config.dart';
+import 'package:paa/utils/constant_config.dart';
+import 'package:paa/utils/plate_config.dart';
+import 'package:paa/utils/text_config.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:scidart/numdart.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:image/image.dart' as image_lib;
 
 class AllAnalysisPage extends StatefulWidget {
   AllAnalysisPage({super.key, this.imageFile, required this.report});
@@ -34,17 +33,20 @@ class AllAnalysisPage extends StatefulWidget {
 class _AllAnalysisPageState extends State<AllAnalysisPage> {
   final GlobalKey<State<StatefulWidget>> _printKey = GlobalKey();
   bool waiting = true;
-  Map<String, List<Color>>? colors;
+
+  Map<String, List<image_lib.Color>>? colors;
   List<int> red = [];
   List<int> green = [];
   List<int> blue = [];
+
   late PolyFit equation;
   List<double> result = [];
+
   Uint8List? imageBytes;
+  List<File> stdFile = [];
+  List<File> smpFile = [];
+
   List<double> con = [];
-
-  List<File> file = [];
-
   Plate plate = Plate();
 
   late var minimum;
@@ -71,59 +73,6 @@ class _AllAnalysisPageState extends State<AllAnalysisPage> {
     setState(() {});
   }
 
-  calCon() {
-    List<double> con = [];
-    for (double i in widget.report.con[widget.report.evaluate]!) {
-      for (int j = 0; j < 5; j++) {
-        con.add(i);
-      }
-    }
-    return con = con + con.toList();
-  }
-
-  conStandard() async {
-    // print(con);
-    con = widget.report.con[widget.report.evaluate]!;
-
-    List<double> standard = widget.report.calStandard();
-    equation = calRsquare(standard, calCon());
-    logger.d(equation);
-  }
-
-  selectImage(List<File> file) {
-    List<File> selected = [];
-    for (int i = 1; i < file.length + 1; i++) {
-      if (Plate.pnpStandard.contains(i) || Plate.pnpSample!.contains(i)) {
-        selected.add(file[i - 1]);
-        // print(i);
-      }
-    }
-    print('#selectedCrop: ${selected.length}');
-    return selected;
-  }
-
-  cropImage() async {
-    file = await cropSquare(widget.imageFile!, false);
-    var length = file.length;
-    print('#cropPerImage: $length');
-    file = selectImage(file);
-  }
-
-  Future<void> extractColors() async {
-    imageBytes = await _readFileByte(widget.imageFile);
-    // print(imageBytes);
-    colors = await compute(extractPixelsColors, imageBytes);
-    colors!.forEach((key, value) {
-      red.addAll(getColorValue(colors![key]!, 'red'));
-      green.addAll(getColorValue(colors![key]!, 'green'));
-      blue.addAll(getColorValue(colors![key]!, 'blue'));
-    });
-    // print(red.length);
-    widget.report.red = red;
-    widget.report.green = green;
-    widget.report.blue = blue;
-  }
-
   Future<Uint8List> _readFileByte(File? filePath) async {
     File audioFile = filePath!;
     Uint8List bytes =
@@ -139,9 +88,74 @@ class _AllAnalysisPageState extends State<AllAnalysisPage> {
     return bytes;
   }
 
+  Future<void> extractColors() async {
+    imageBytes = await _readFileByte(widget.imageFile);
+
+    //extract the RGB code from the image
+    colors = await compute(extractPixelsColors, imageBytes);
+
+    //separate each color code
+    colors!.forEach((key, value) {
+      red.addAll(getColorValue(colors![key]!, 'red'));
+      green.addAll(getColorValue(colors![key]!, 'green'));
+      blue.addAll(getColorValue(colors![key]!, 'blue'));
+    });
+
+    //put the color code into the model (including standard & sample)
+    widget.report.red = red;
+    widget.report.green = green;
+    widget.report.blue = blue;
+
+    logger.i('green code: #${green.length}');
+  }
+
+  calCon() {
+    //set up the concentration value to equal to the green code
+    List<double> con = [];
+    for (double i in widget.report.con[widget.report.evaluate]!) {
+      for (int j = 0; j < 5; j++) {
+        con.add(i);
+      }
+    }
+    return con = con + con.toList();
+  }
+
+  conStandard() async {
+    //get the concentration of the standard plates
+    con = widget.report.con[widget.report.evaluate]!;
+    //get the green code from the model
+    List<double> standard = widget.report.calStandard();
+    //create the equaltion
+    equation = calRsquare(standard, calCon());
+    logger.d(equation);
+  }
+
+  cropImage() async {
+    var file = await cropSquare(widget.imageFile!, false);
+    var length = file.length;
+    logger.i('#cropPerImage: $length');
+    file = selectImage(file);
+    stdFile = file[0];
+    smpFile = file[1];
+  }
+
+  selectImage(List<File> file) {
+    List<File> std = [];
+    List<File> smp = [];
+    for (int i = 1; i < file.length + 1; i++) {
+      if (Plate.pnpStandard.contains(i)) {
+        std.add(file[i - 1]);
+      } else if (Plate.pnpSample!.contains(i)) {
+        smp.add(file[i - 1]);
+      }
+    }
+    logger.i('#cropedImageUse: ${std.length + smp.length}');
+    return [std, smp];
+  }
+
   List<ChartData> calScatter(String type) {
     result = calConcentrate(equation, widget.report.calSample());
-    logger.i('#calScatter complete');
+    logger.i('#calScatter complete: ${result.length}');
     return getData(
         type == PreferenceKey.standard ? calCon() : result,
         type == PreferenceKey.standard
@@ -172,16 +186,16 @@ class _AllAnalysisPageState extends State<AllAnalysisPage> {
                 tooltipBehavior: TooltipBehavior(
                     enable: true,
                     tooltipPosition: TooltipPosition.pointer,
-                    borderColor: Colors.red,
+                    borderColor: Colors.green.shade400,
                     borderWidth: 5,
-                    color: Colors.lightBlue),
+                    color: Colors.green),
                 title: const ChartTitle(
                   text: 'Standard Linear Regression',
                   textStyle: TextStyle(fontSize: 12),
                 ),
                 primaryXAxis: widget.report.evaluate ==
                         PreferenceKey.peraceticAcid
-                    ? const NumericAxis(minimum: 0, interval: 10, maximum: 30)
+                    ? const NumericAxis(minimum: 0, interval: 1, maximum: 4)
                     : const NumericAxis(minimum: 0, interval: 0.5, maximum: 5),
                 legend: const Legend(
                     isVisible: true,
@@ -191,12 +205,16 @@ class _AllAnalysisPageState extends State<AllAnalysisPage> {
                     minimum: minimum, maximum: maximum, interval: 5),
                 series: <CartesianSeries>[
                   ScatterSeries<ChartData, double>(
+                      name: "standard plates",
+                      color: Colors.blue,
                       legendItemText: PreferenceKey.standard,
                       enableTooltip: true,
                       dataSource: calScatter(PreferenceKey.standard),
                       xValueMapper: (ChartData data, _) => data.x,
                       yValueMapper: (ChartData data, _) => data.y),
                   LineSeries<ChartData, double>(
+                      name: "standard line",
+                      color: Colors.amber,
                       legendItemText:
                           'y = ${equation.coefficient(1).toStringAsFixed(3)}x+${equation.coefficient(0).toStringAsFixed(3)} (R^2 =${equation.R2().toStringAsFixed(3)})',
                       enableTooltip: true,
@@ -204,6 +222,8 @@ class _AllAnalysisPageState extends State<AllAnalysisPage> {
                       xValueMapper: (ChartData data, _) => data.x,
                       yValueMapper: (ChartData data, _) => data.y),
                   ScatterSeries<ChartData, double>(
+                      name: "sample plates",
+                      color: Colors.orange,
                       legendItemText: PreferenceKey.sample,
                       enableTooltip: true,
                       dataSource: calScatter(PreferenceKey.sample),
@@ -215,100 +235,6 @@ class _AllAnalysisPageState extends State<AllAnalysisPage> {
     );
   }
 
-  // Widget _showImage() {
-  //   return result.isEmpty
-  //       ? const CircularProgressIndicator()
-  //       : Stack(children: [
-  //           Container(
-  //             height: 300,
-  //             child: Image.file(widget.imageFile!,
-  //                 semanticLabel: "96-well plates", fit: BoxFit.fill),
-  //           ),
-  //           for (int i = 1; i < 6; i++)
-  //             Positioned(
-  //                 child: Tooltip(
-  //                   triggerMode: TooltipTriggerMode.tap,
-  //                   preferBelow: false,
-  //                   padding: EdgeInsets.all(8.0),
-  //                   message:
-  //                       con.isEmpty ? "xx.xx" : con[i - 1].toStringAsFixed(2),
-  //                   child: Icon(Icons.check_circle_outline_outlined,
-  //                       color: Colors.green),
-  //                 ),
-  //                 top: 18.75 * 3,
-  //                 left: (MediaQuery.of(context).size.width * i / 12.0) + 3),
-  //           for (int i = 1; i < 6; i++)
-  //             Positioned(
-  //                 child: Tooltip(
-  //                   triggerMode: TooltipTriggerMode.tap,
-  //                   preferBelow: false,
-  //                   padding: EdgeInsets.all(8.0),
-  //                   message:
-  //                       con.isEmpty ? "xx.xx" : con[i - 1].toStringAsFixed(2),
-  //                   child: Icon(Icons.check_circle_outline_outlined,
-  //                       color: Colors.green),
-  //                 ),
-  //                 top: 18.75 * 5,
-  //                 left: (MediaQuery.of(context).size.width * i / 12.0) + 3),
-  //           for (int i = 1; i < 11; i++)
-  //             Positioned(
-  //                 child: Tooltip(
-  //                   triggerMode: TooltipTriggerMode.tap,
-  //                   preferBelow: false,
-  //                   padding: EdgeInsets.all(8.0),
-  //                   message: result.isEmpty
-  //                       ? "xx.xx"
-  //                       : (result[i - 1] * 2).toStringAsFixed(2),
-  //                   child: Icon(Icons.check_circle_outline_outlined,
-  //                       color: Colors.red),
-  //                 ),
-  //                 top: 18.75 * 7,
-  //                 left: (MediaQuery.of(context).size.width * i / 12.0) + 3),
-  //           for (int i = 1; i < 11; i++)
-  //             Positioned(
-  //                 child: Tooltip(
-  //                   triggerMode: TooltipTriggerMode.tap,
-  //                   preferBelow: false,
-  //                   padding: EdgeInsets.all(8.0),
-  //                   message: result.isEmpty
-  //                       ? "xx.xx"
-  //                       : (result[i + 10 - 1] * 2).toStringAsFixed(2),
-  //                   child: Icon(Icons.check_circle_outline_outlined,
-  //                       color: Colors.red),
-  //                 ),
-  //                 top: 18.75 * 9,
-  //                 left: (MediaQuery.of(context).size.width * i / 12.0) + 3),
-  //           for (int i = 1; i < 11; i++)
-  //             Positioned(
-  //                 child: Tooltip(
-  //                   triggerMode: TooltipTriggerMode.tap,
-  //                   preferBelow: false,
-  //                   padding: EdgeInsets.all(8.0),
-  //                   message: result.isEmpty
-  //                       ? "xx.xx"
-  //                       : (result[i + 20 - 1] * 2).toStringAsFixed(2),
-  //                   child: Icon(Icons.check_circle_outline_outlined,
-  //                       color: Colors.red),
-  //                 ),
-  //                 top: 18.75 * 11,
-  //                 left: (MediaQuery.of(context).size.width * i / 12.0) + 3),
-  //           for (int i = 1; i < 11; i++)
-  //             Positioned(
-  //                 child:  Tooltip(
-  //                   triggerMode: TooltipTriggerMode.tap,
-  //                   preferBelow: false,
-  //                   padding: const EdgeInsets.all(8.0),
-  //                   message: result.isEmpty
-  //                       ? "xx.xx"
-  //                       : (result[i + 30 - 1] * 2).toStringAsFixed(2),
-  //                   child: const Icon(Icons.check_circle_outline_outlined,
-  //                       color: Colors.red),
-  //                 ),
-  //                 top: 18.75 * 13,
-  //                 left: (MediaQuery.of(context).size.width * i / 12.0) + 3)
-  //         ]);
-  // }
-
   List<List<String>> smp = [];
 
   Widget _showResult() {
@@ -316,9 +242,9 @@ class _AllAnalysisPageState extends State<AllAnalysisPage> {
 
     int i = 0;
     int j = 0;
-    int n = -1;
+    int n = 0;
 
-    return file.isEmpty
+    return stdFile.isEmpty
         ? const SizedBox(
             height: 10,
           )
@@ -326,13 +252,15 @@ class _AllAnalysisPageState extends State<AllAnalysisPage> {
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 5,
-            ),
-            itemCount: file.length,
+                crossAxisCount: 6,
+                crossAxisSpacing: 1,
+                mainAxisSpacing: 1,
+                childAspectRatio: 1 / 1.5),
+            itemCount: stdFile.length + smpFile.length,
             itemBuilder: (BuildContext ctx, index) {
-              String title;
-              String concentrate;
-              String rgbCode;
+              String title = '';
+              String concentrate = '';
+              String rgbCode = '';
 
               if (index < Plate.pnpStandard.length) {
                 title = 'Std';
@@ -340,27 +268,38 @@ class _AllAnalysisPageState extends State<AllAnalysisPage> {
                 rgbCode = widget.report.standard[i * 5].toStringAsFixed(0);
                 i++;
               } else {
+                var additionSmpPlateNo = [8, 9, 10, 11, 8, 9, 10, 11];
                 var number = index % 10;
                 if (number == 0) n++;
-                title = plate.label[n] + plate.no[number].toString();
+                if (index < 20) {
+                  if (index == 16) n++;
+                  title = plate.label[n] + additionSmpPlateNo[j].toString();
+                } else {
+                  title = plate.label[n] + plate.no[number].toString();
+                }
+
                 concentrate = (result[j] * 2).toStringAsFixed(2);
                 rgbCode = widget.report.sample[j].toStringAsFixed(0);
                 smp.add([
                   title,
                   "SMP",
-                  "${widget.report.red[50 + j]}",
-                  "${widget.report.green[50 + j]}",
-                  "${widget.report.blue[50 + j]}",
+                  "${widget.report.red[60 + j]}",
+                  "${widget.report.green[60 + j]}",
+                  "${widget.report.blue[60 + j]}",
                   "-",
                   concentrate
                 ]);
                 j++;
               }
               return Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text('$title=$concentrate', style: StyleText.resultText),
                   Image.file(
-                    file[index],
+                    index < Plate.pnpStandard.length
+                        ? stdFile[index]
+                        : smpFile[j - 1],
                     fit: BoxFit.contain,
                     height: 40,
                     width: 50,
@@ -385,9 +324,9 @@ class _AllAnalysisPageState extends State<AllAnalysisPage> {
                 padding: const EdgeInsets.all(8.0),
                 child: ElevatedButton.icon(
                     style: ElevatedButton.styleFrom(
-                      textStyle: StyleText.normalText,
-                      backgroundColor: Colors.green,
-                    ),
+                        textStyle: StyleText.normalText,
+                        backgroundColor: Colors.green,
+                        foregroundColor: Colors.white),
                     onPressed: () {
                       generateCsv();
                     },
@@ -408,7 +347,7 @@ class _AllAnalysisPageState extends State<AllAnalysisPage> {
       int x = j ~/ 5;
       for (int i = 0; i < 5; i++) {
         std.add([
-          "${x < 5 ? label[0] : label[1]}${plate.no[x % 5]}",
+          "${x < 6 ? label[0] : label[1]}${plate.no[x % 6]}",
           "STD",
           "${widget.report.red[j]}",
           "${widget.report.green[j]}",
@@ -423,15 +362,7 @@ class _AllAnalysisPageState extends State<AllAnalysisPage> {
     // print("row of smp: ${smp.length}");
 
     List<List<String>> data = [
-          [
-            "well_index",
-            "STD/SMP",
-            "color_R",
-            "color_G",
-            "color_B",
-            "HSV",
-            "saturation"
-          ]
+          ["well\nindex", "STD/SMP", "R", "G", "B", "HSV", "saturation"]
         ] +
         std.toList() +
         smp.toList();
@@ -456,6 +387,7 @@ class _AllAnalysisPageState extends State<AllAnalysisPage> {
     return Scaffold(
         key: UniqueKey(),
         appBar: AppBar(
+          foregroundColor: Colors.white,
           backgroundColor: Colors.green,
           actions: [
             IconButton(
@@ -479,10 +411,7 @@ class _AllAnalysisPageState extends State<AllAnalysisPage> {
                 // mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   reportHeader(report.name, report.evaluate),
-
                   _showChart(),
-                  // SizedBox(height: 10),
-                  // _showImage(),
                   _showExportButton(),
                   Container(child: _showResult()),
                 ],

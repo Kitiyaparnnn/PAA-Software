@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:paa/utils/constantConfig.dart';
-import '../../../utils/TextConfig.dart';
+import 'package:paa/utils/constant_config.dart';
+import 'package:paa/utils/text_config.dart';
 
 final date = DateTime.now();
 

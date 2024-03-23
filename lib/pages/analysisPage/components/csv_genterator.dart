@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
+import 'package:paa/utils/color_config.dart';
 
 class LoadCsvDataScreen extends StatelessWidget {
   final String path;
@@ -12,9 +13,21 @@ class LoadCsvDataScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Widget rowData(String text) {
+      return SizedBox(
+        width: MediaQuery.of(context).size.width * 0.13,
+        child: Text(
+          text,
+          textAlign: TextAlign.center,
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text("$title .csv"),
+        backgroundColor: ColorCode.themeColor,
+        foregroundColor: ColorCode.iconsAppBar,
       ),
       body: FutureBuilder(
         future: loadingCsvData(path),
@@ -30,31 +43,16 @@ class LoadCsvDataScreen extends StatelessWidget {
                             (data) => Padding(
                               padding: const EdgeInsets.symmetric(vertical: 10),
                               child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: <Widget>[
-                                  Text(
-                                    data[0].toString(),
-                                  ),
-                                  Text(
-                                    data[1].toString(),
-                                  ),
-                                  Text(
-                                    data[2].toString(),
-                                  ),
-                                  Text(
-                                    data[3].toString(),
-                                  ),
-                                  Text(
-                                    data[4].toString(),
-                                  ),
-                                  Text(
-                                    data[5].toString(),
-                                  ),
-                                  Text(
-                                    data[6].toString(),
-                                  ),
+                                  rowData(data[0].toString()),
+                                  rowData(data[1].toString()),
+                                  rowData(data[2].toString()),
+                                  rowData(data[3].toString()),
+                                  rowData(data[4].toString()),
+                                  rowData(data[5].toString()),
+                                  rowData(data[6].toString()),
                                 ],
                               ),
                             ),

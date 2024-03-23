@@ -1,9 +1,9 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as image_lib;
-import 'package:paa/utils/constantConfig.dart';
-import 'package:paa/utils/plateConfig.dart';
-import '../../../myApp.dart';
+import 'package:paa/my_app.dart';
+import 'package:paa/utils/constant_config.dart';
+import 'package:paa/utils/plate_config.dart';
 
 Plate plate = Plate();
 
@@ -14,7 +14,7 @@ Color abgrToColor(int argbColor) {
   return Color(hex);
 }
 
-Map<String, List<Color>> extractPixelsColors(Uint8List? bytes) {
+Map<String, List<image_lib.Color>> extractPixelsColors(Uint8List? bytes) {
   Map<String, List<image_lib.Color>> colorCode = {};
 
   try {
@@ -22,7 +22,7 @@ Map<String, List<Color>> extractPixelsColors(Uint8List? bytes) {
     image_lib.Image? image = image_lib.decodeImage(bytes!);
     List<image_lib.Color> colorOfStandard = [];
     List<image_lib.Color> colorOfSample = [];
-    List<int?> pixels = [];
+    // List<int?> pixels = [];
 
     int? width = image?.width;
     int? height = image?.height;
@@ -48,8 +48,7 @@ Map<String, List<Color>> extractPixelsColors(Uint8List? bytes) {
         //get the 5 points rgb code of each standard plates
         if (Plate.pnpStandard.contains(no)) {
           //get (r,g,b,a)
-          logger.i(
-              'get rgb: ${image?.getPixelCubic(xChunk * i - midX, yChunk * j - midY)[0]}');
+          // logger.i('get rgb: ${image?.getPixelCubic(xChunk * i - midX, yChunk * j - midY)[0]}');
           // Color pixel1 = abgrToColor(
           //     (image?.getPixel(xChunk * i - midX, yChunk * j - midY))! as int);
           // var pixel2 = abgrToColor(
@@ -102,23 +101,23 @@ Map<String, List<Color>> extractPixelsColors(Uint8List? bytes) {
   return colorCode;
 }
 
-List<int> getColorValue(List<Color> c, String color) {
+List<int> getColorValue(List<image_lib.Color> c, String color) {
   List<int> value = [];
 
   try {
     if (color == 'red') {
       for (var c in c) {
-        value.add(c.red);
+        value.add(c[0] as int);
       }
     }
     if (color == 'green') {
       for (var c in c) {
-        value.add(c.green);
+        value.add(c[1] as int);
       }
     }
     if (color == 'blue') {
       for (var c in c) {
-        value.add(c.blue);
+        value.add(c[3] as int);
       }
     }
   } catch (e) {

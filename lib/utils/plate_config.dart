@@ -6,7 +6,7 @@ List<int> row3 = List.generate(10, (index) => index + 62);
 List<int> row4 = List.generate(10, (index) => index + 74);
 
 class Plate {
-  var label = ['D', 'E', 'F', 'G'];
+  var label = ['B', 'C', 'D', 'E', 'F', 'G'];
   var no = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 
   //standard
