@@ -170,7 +170,8 @@ class _InputPageState extends State<InputPage> {
     }
 
     return Container(
-      height: 2.5,
+      height: 30,
+      width: 30,
       decoration: BoxDecoration(
         border: Border.all(color: Colors.grey),
       ),
@@ -306,20 +307,17 @@ class _InputPageState extends State<InputPage> {
                                 ],
                               ),
                               Container(
-                                height: MediaQuery.of(context).size.width,
-                                // constraints: BoxConstraints(
-                                //   maxWidth: MediaQuery.of(context).size.width,
-                                //   maxHeight: 252,
-                                // ),
+                                width: 360,
+                                height: 230,
                                 decoration: const BoxDecoration(
-                                  shape: BoxShape.rectangle,
-                                ),
+                                    shape: BoxShape.rectangle,
+                                    color: Colors.amber),
                                 child: Stack(
                                   children: [
                                     imageFile != null
                                         ? Image.file(imageFile!,
                                             width: double.infinity,
-                                            height: 240,
+                                            height: 235,
                                             semanticLabel: "96-well plates",
                                             fit: BoxFit.cover)
                                         : Center(
@@ -333,12 +331,12 @@ class _InputPageState extends State<InputPage> {
                                           ),
                                     GridView.count(
                                       shrinkWrap: true,
-                                      // physics: NeverScrollableScrollPhysics(),
                                       crossAxisCount: 12,
                                       children: List.generate(
                                           96,
                                           (index) => _checkBox(
-                                              dropdownValue, index + 1)),
+                                              dropdownValue, index + 1),
+                                          growable: false),
                                     ),
                                   ],
                                 ),
