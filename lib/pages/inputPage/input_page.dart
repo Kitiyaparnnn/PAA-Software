@@ -7,9 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:paa/models/report_info.dart';
 import 'package:paa/my_app.dart';
 import 'package:paa/pages/analysisPage/all_analysis_page.dart';
-import 'package:paa/pages/analysisPage/tap_analysis_page.dart';
 import 'package:paa/pages/inputPage/components/input_decoration.dart';
-
 import 'package:paa/utils/color_config.dart';
 import 'package:paa/utils/constant_config.dart';
 import 'package:paa/utils/plate_config.dart';
@@ -179,24 +177,31 @@ class _InputPageState extends State<InputPage> {
     );
   }
 
-  Widget _analyzTap() {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-          textStyle: StyleText.normalText,
-          minimumSize: const Size.fromHeight(50),
-          backgroundColor: ColorCode.buttonsColor),
-      onPressed: () {
-        imageFile == null || report.evaluate == PreferenceKey.inputForm
-            ? BotToast.showText(text: PreferenceKey.noti)
-            : Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (BuildContext context) =>
-                        const TapAnalysisPage()));
-      },
-      child: Text(PreferenceKey.analyzTap, style: StyleText.buttonText),
-    );
-  }
+  // Widget _analyzTap() {
+  //   return ElevatedButton(
+  //     style: ElevatedButton.styleFrom(
+  //         textStyle: StyleText.normalText,
+  //         minimumSize: const Size.fromHeight(50),
+  //         backgroundColor: ColorCode.buttonsColor),
+  //     onPressed: () {
+  //       imageFile == null || report.evaluate == PreferenceKey.inputForm
+  //           ? BotToast.showText(text: PreferenceKey.noti)
+  //           : Navigator.push(
+  //               context,
+  //               MaterialPageRoute(
+  //                   builder: (BuildContext context) =>
+  //                       // TapAnalysisPage(
+  //                       //       report: report,
+  //                       //       imageFile: _image,
+  //                       //     )
+  //                       ColorPickerWidget(
+  //                         report: report,
+  //                         imageFile: _image,
+  //                       )));
+  //     },
+  //     child: Text(PreferenceKey.analyzTap, style: StyleText.buttonText),
+  //   );
+  // }
 
   Widget _analyzAll() {
     return ElevatedButton(
@@ -310,8 +315,8 @@ class _InputPageState extends State<InputPage> {
                                 width: 360,
                                 height: 230,
                                 decoration: const BoxDecoration(
-                                    shape: BoxShape.rectangle,
-                                    color: Colors.amber),
+                                  shape: BoxShape.rectangle,
+                                ),
                                 child: Stack(
                                   children: [
                                     imageFile != null
@@ -342,9 +347,9 @@ class _InputPageState extends State<InputPage> {
                                 ),
                               ),
                             ]),
-                        // const SizedBox(
-                        //   height: 10,
-                        // ),
+                        const SizedBox(
+                          height: 10,
+                        ),
                         // _analyzTap(),
                         const SizedBox(
                           height: 10,

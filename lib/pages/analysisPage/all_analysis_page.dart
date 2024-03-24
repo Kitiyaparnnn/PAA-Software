@@ -49,8 +49,8 @@ class _AllAnalysisPageState extends State<AllAnalysisPage> {
   List<double> con = [];
   Plate plate = Plate();
 
-  late var minimum;
-  late var maximum;
+  late double minimum;
+  late double maximum;
 
   @override
   void initState() {
@@ -358,8 +358,6 @@ class _AllAnalysisPageState extends State<AllAnalysisPage> {
         j++;
       }
     }
-    // print("row of std: ${std.length}");
-    // print("row of smp: ${smp.length}");
 
     List<List<String>> data = [
           ["well\nindex", "STD/SMP", "R", "G", "B", "HSV", "saturation"]

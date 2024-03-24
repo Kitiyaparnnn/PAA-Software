@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
               home: SafeArea(
                 child: Scaffold(
                   body: Container(
-                    color: Colors.white,
+                    color: Colors.green.shade400,
                     // child: Center(
                     //   child: Image.asset(
                     //     'lib/assets/images/logo_app.jpg',
