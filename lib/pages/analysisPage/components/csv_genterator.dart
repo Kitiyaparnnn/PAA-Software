@@ -15,7 +15,7 @@ class LoadCsvDataScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget rowData(String text) {
       return SizedBox(
-        width: MediaQuery.of(context).size.width * 0.13,
+        width: MediaQuery.of(context).size.width * 0.15,
         child: Text(
           text,
           textAlign: TextAlign.center,
@@ -52,7 +52,6 @@ class LoadCsvDataScreen extends StatelessWidget {
                                   rowData(data[3].toString()),
                                   rowData(data[4].toString()),
                                   rowData(data[5].toString()),
-                                  rowData(data[6].toString()),
                                 ],
                               ),
                             ),

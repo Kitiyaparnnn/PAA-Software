@@ -1,12 +1,11 @@
-// import 'package:bot_toast/bot_toast.dart';
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:logger/logger.dart';
 import 'package:paa/pages/inputPage/input_page.dart';
-// import 'pages/AnalyzePage/SummaryPage.dart';
-// import 'pages/InputPage/InputPage.dart';
-// import 'package:google_fonts/google_fonts.dart';
+import 'package:paa/utils/color_config.dart';
+
 
 final logger = Logger(
   printer: PrettyPrinter(),
@@ -37,13 +36,12 @@ class MyApp extends StatelessWidget {
               home: SafeArea(
                 child: Scaffold(
                   body: Container(
-                    color: Colors.green.shade400,
-                    // child: Center(
-                    //   child: Image.asset(
-                    //     'lib/assets/images/logo_app.jpg',
-                    //     // fit: BoxFit.cover,
-                    //   ),
-                    // ),
+                    color: ColorCode.themeColor,
+                    child: const Center(
+                      child: CircularProgressIndicator(
+                        color: ColorCode.iconsAppBar,
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -52,11 +50,10 @@ class MyApp extends StatelessWidget {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
             title: "modern-css by Kitiyaporn T.",
-            // builder: BotToastInit(),
-            // navigatorObservers: [BotToastNavigatorObserver()],
+            builder: BotToastInit(),
+            navigatorObservers: [BotToastNavigatorObserver()],
             home: const InputPage(),
             theme: ThemeData(
-                primarySwatch: Colors.green,
                 textTheme: GoogleFonts.sarabunTextTheme()),
           );
         });

@@ -52,6 +52,7 @@ dependencies:
   csv: ^6.0.0
   image_pixels: ^3.0.2
   flutter_launcher_icons: ^0.13.1
+  http: ^1.2.0
 
 dev_dependencies:
   flutter_test:
@@ -67,7 +68,8 @@ dev_dependencies:
 flutter_launcher_icons:
   android: true
   ios: true
-  image_path: "lib/assets/image/logo.jpg"
+  adaptive_icon_background: "#ffffff"
+  image_path: "lib/assets/images/playstore.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

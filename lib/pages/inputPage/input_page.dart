@@ -239,7 +239,7 @@ class _InputPageState extends State<InputPage> {
           onChanged: (context) => setState(() {
             report.name = context;
           }),
-          cursorColor: Colors.green,
+          cursorColor: ColorCode.themeColor,
           decoration: InputDecorations.inputDec(hintText: 'example'),
           style: StyleText.normalText,
         ),
@@ -265,7 +265,7 @@ class _InputPageState extends State<InputPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(PreferenceKey.appName, style: StyleText.appBar),
-        backgroundColor: Colors.green,
+        backgroundColor: ColorCode.themeColor,
       ),
       body: GestureDetector(
         onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
@@ -303,9 +303,7 @@ class _InputPageState extends State<InputPage> {
                                             ColorCode.buttonsColor),
                                     onPressed: _showImageDialog,
                                     child: Text(
-                                      imageFile == null
-                                          ? "Upload"
-                                          : "Change",
+                                      imageFile == null ? "Upload" : "Change",
                                       style: StyleText.buttonText,
                                     ),
                                   )

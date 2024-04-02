@@ -177,18 +177,18 @@ class _AllAnalysisPageState extends State<AllAnalysisPage> {
     return Center(
       child: waiting
           ? const CircularProgressIndicator(
-              color: Colors.green,
+              color: ColorCode.themeColor,
             )
           : SizedBox(
-              height: 400,
+              // height: 400,
               //Initialize chart
               child: SfCartesianChart(
                 tooltipBehavior: TooltipBehavior(
                     enable: true,
                     tooltipPosition: TooltipPosition.pointer,
-                    borderColor: Colors.green.shade400,
+                    borderColor: ColorCode.buttonsColor,
                     borderWidth: 5,
-                    color: Colors.green),
+                    color: ColorCode.buttonsColor),
                 title: const ChartTitle(
                   text: 'Standard Linear Regression',
                   textStyle: TextStyle(fontSize: 12),
@@ -324,7 +324,7 @@ class _AllAnalysisPageState extends State<AllAnalysisPage> {
                 child: ElevatedButton.icon(
                     style: ElevatedButton.styleFrom(
                         textStyle: StyleText.normalText,
-                        backgroundColor: Colors.green,
+                        backgroundColor: ColorCode.buttonsColor,
                         foregroundColor: Colors.white),
                     onPressed: () {
                       generateCsv();
@@ -358,13 +358,14 @@ class _AllAnalysisPageState extends State<AllAnalysisPage> {
     }
 
     List<List<String>> data = [
-          ["well_index", "STD/SMP", "R", "G", "B", "concentration\n(µg/mL)"]
+          ["well index", "STD/SMP", "R", "G", "B", "concentration\n(µg/mL)"]
         ] +
         std.toList() +
         smp.toList();
     String csvData = const ListToCsvConverter().convert(data);
     final String directory = (await getExternalStorageDirectory())!.path;
-    final path = "$directory/m-css-${widget.report.name}-${DateTime.now()}.csv";
+    final path = "$directory/paa-${widget.report.name}-${DateTime.now()}.csv";
+    logger.d('csv file path: $path');
     final File file = File(path);
     await file.writeAsString(csvData);
     Navigator.of(context).push(
@@ -384,7 +385,7 @@ class _AllAnalysisPageState extends State<AllAnalysisPage> {
         key: UniqueKey(),
         appBar: AppBar(
           foregroundColor: Colors.white,
-          backgroundColor: Colors.green,
+          backgroundColor: ColorCode.themeColor,
           actions: [
             IconButton(
               color: ColorCode.iconsAppBar,
