@@ -14,8 +14,8 @@ Map<int, Color> color = {
 };
 
 class ColorCode {
-  static Color themeColor = Colors.green;
+  static Color themeColor = const Color.fromRGBO(185, 57, 158,255);
   static Color iconsAppBar = Colors.white;
-  static Color buttonsColor = Colors.green.shade400;
+  static Color buttonsColor = const Color.fromRGBO(185, 57, 158,150);
 
 }

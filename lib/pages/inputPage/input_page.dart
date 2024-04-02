@@ -42,7 +42,7 @@ class _InputPageState extends State<InputPage> {
         builder: (context) {
           return AlertDialog(
             title: Text(
-              "อัพโหลดรูปภาพจาก",
+              "Import from",
               style: StyleText.headerText,
             ),
             content: Column(
@@ -65,7 +65,7 @@ class _InputPageState extends State<InputPage> {
                         ),
                       ),
                       Text(
-                        "กล้อง",
+                        "Camera",
                         style: TextStyle(color: Colors.grey),
                       )
                     ],
@@ -88,7 +88,7 @@ class _InputPageState extends State<InputPage> {
                         ),
                       ),
                       Text(
-                        "แกลลอรี่",
+                        "Gallery",
                         style: TextStyle(color: Colors.grey),
                       )
                     ],
@@ -264,7 +264,7 @@ class _InputPageState extends State<InputPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("PAA v.1", style: StyleText.appBar),
+        title: Text(PreferenceKey.appName, style: StyleText.appBar),
         backgroundColor: Colors.green,
       ),
       body: GestureDetector(
@@ -304,8 +304,8 @@ class _InputPageState extends State<InputPage> {
                                     onPressed: _showImageDialog,
                                     child: Text(
                                       imageFile == null
-                                          ? "อัพโหลดรูปภาพ"
-                                          : "เปลี่ยนรูปภาพ",
+                                          ? "Upload"
+                                          : "Change",
                                       style: StyleText.buttonText,
                                     ),
                                   )

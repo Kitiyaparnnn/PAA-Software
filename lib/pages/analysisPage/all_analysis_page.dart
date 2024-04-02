@@ -286,7 +286,6 @@ class _AllAnalysisPageState extends State<AllAnalysisPage> {
                   "${widget.report.red[60 + j]}",
                   "${widget.report.green[60 + j]}",
                   "${widget.report.blue[60 + j]}",
-                  "-",
                   concentrate
                 ]);
                 j++;
@@ -352,7 +351,6 @@ class _AllAnalysisPageState extends State<AllAnalysisPage> {
           "${widget.report.red[j]}",
           "${widget.report.green[j]}",
           "${widget.report.blue[j]}",
-          "-",
           con[x].toStringAsFixed(2)
         ]);
         j++;
@@ -360,7 +358,7 @@ class _AllAnalysisPageState extends State<AllAnalysisPage> {
     }
 
     List<List<String>> data = [
-          ["well\nindex", "STD/SMP", "R", "G", "B", "HSV", "saturation"]
+          ["well_index", "STD/SMP", "R", "G", "B", "concentration\n(µg/mL)"]
         ] +
         std.toList() +
         smp.toList();
@@ -398,7 +396,7 @@ class _AllAnalysisPageState extends State<AllAnalysisPage> {
               ),
             )
           ],
-          title: Text('รายงานผลวิเคราะห์', style: StyleText.appBar),
+          title: Text(PreferenceKey.reportHeader, style: StyleText.appBar),
         ),
         body: SingleChildScrollView(
           child: RepaintBoundary(
