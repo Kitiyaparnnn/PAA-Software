@@ -117,18 +117,20 @@ class _InputPageState extends State<InputPage> {
   }
 
   void _cropImage(filePath) async {
-    File? croppedFile = await ImageCropper().cropImage(
+    CroppedFile? croppedFile = await ImageCropper().cropImage(
         sourcePath: filePath,
         maxHeight: 1080,
         maxWidth: 1080,
-        aspectRatioPresets: [
-          CropAspectRatioPreset.original,
-          CropAspectRatioPreset.ratio16x9
-        ],
-        androidUiSettings: const AndroidUiSettings(
+        // aspectRatio: [
+        //   CropAspectRatioPreset.original,
+        //   CropAspectRatioPreset.ratio16x9
+        // ],
+        uiSettings:[
+          AndroidUiSettings(
           cropGridRowCount: 7,
           cropGridColumnCount: 11,
-        ));
+          )
+        ] );
 
     if (croppedFile != null) {
       _saveImage();
